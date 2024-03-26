@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 using namespace std;
+string nomeP1,nomeP2,nomeP3;
 
 /**
  * @brief Struttura per la gestione delle dimensioni dell'immagine
@@ -49,6 +50,7 @@ struct DataP3
  */
 struct ImageP1
 {
+    string nome;
     string format;
     string comment;
     Size size;
@@ -414,27 +416,164 @@ void freeImageP3(ImageP3 *imageP3)
 ImageP1* newImageP1(const unsigned int rows, const unsigned int cols)
 {
     ImageP1* img = new ImageP1;
-    string nome;
-    cout << "nome di image: ";cin >> nome;
-    img->format = nome;
+
+    cout << "nome di image: ";cin >> nomeP1;
+    ofstream outFile(nomeP1);
     img->size.cols = cols;
     img->size.rows = rows;
+
+
     img->data.pixels = new short int *[img->size.rows];
 
-    for(int j = 0;j < rows;j++)
+    for (int r = 0; r < img->size.rows; r++)
     {
-       img->data.pixels[j] = 0;
+        img->data.pixels[r] = new short int[img->size.cols];
+        for (int c = 0; c < img->size.cols; c++)
+        {
+            img->data.pixels[r][c] = 0;
+            if(img->data.pixels[r][c] > 255)
+            {
+                cout << "a pixel value cant be > 1";
+                exit(0);
+            }
+            outFile << img->data.pixels[r][c];
+        
+        }
+        outFile << "\n";
     }
-    
+    outFile.close();
     return img;
 }
 
-int writeImageP1(string filename)
+ImageP2* newImageP2(const unsigned int rows, const unsigned int cols,ImageP2* image2)
 {
 
+
+    cout << "nome di image: ";cin >> nomeP2;
+    ImageP2 *img2 = new ImageP2; 
+    ofstream outFile(nomeP2);
+    img2->size.cols = cols;
+    img2->size.rows = rows;
+
+
+    img2->data.pixels = new unsigned int *[img2->size.rows];
+
+    for (int r = 0; r < img2->size.rows; r++)
+    {
+        img2->data.pixels[r] = new unsigned int[img2->size.cols];
+        for (int c = 0; c < img2->size.cols; c++)
+        {
+            img2->data.pixels[r][c] = 0;
+            if(img2->data.pixels[r][c] > 255)
+            {
+                cout << "a pixel value cant be > 255";
+                exit(0);
+            }
+            outFile << img2->data.pixels[r][c];
+        
+        }
+        outFile << "\n";
+    }
+    image2 = img2;
+    outFile.close();
+    return img2;
+
+}
+ImageP3* newImageP3(const unsigned int rows, const unsigned int cols, ImageP3 *image3)
+{
+    ImageP3 *img3 = new ImageP3;
+    cout << "nome di image: ";
+    cin >> nomeP3;
+    ofstream outFile(nomeP3);
+    
+    img3->size.cols = cols;
+    img3->size.rows = rows;
+
+    img3->data.red = new unsigned int*[img3->size.rows];
+    img3->data.green = new unsigned int*[img3->size.rows];
+    img3->data.blue = new unsigned int*[img3->size.rows];
+    
+    for (int r = 0; r < img3->size.rows; r++)
+    {
+        img3->data.red[r] = new unsigned int[img3->size.cols];
+        img3->data.green[r] = new unsigned int[img3->size.cols];
+        img3->data.blue[r] = new unsigned int[img3->size.cols]; 
+        
+
+        for (int c = 0; c < img3->size.cols; c++)
+        {
+            img3->data.red[r][c] = 0;
+            img3->data.green[r][c] = 0;
+            img3->data.blue[r][c] = 0;
+            
+            
+            outFile << img3->data.red[r][c] << " "<< img3->data.green[r][c] << " "<< img3->data.blue[r][c] << " ";
+        }
+        outFile << endl; 
+    }
+    image3 = img3;
+    outFile.close();
+    return img3;
 }
 
+int writeimageP1(){
+    ifstream inFile(nomeP1);
+    string line;
+    while (getline(inFile, line)) {
+
+
+    cout << line << endl;        
+
+    }
+    return 0;
+}
+
+int writeimageP2(){
+    ifstream inFile(nomeP2);
+    string line;
+    while (getline(inFile, line)) {
+
+
+    cout << line << endl;        
+
+    }
+    return 0;
+}
+
+int writeimageP3(){
+    ifstream inFile(nomeP3);
+    string line;
+    while (getline(inFile, line)) {
+
+
+    cout << line << endl;        
+
+    }
+    return 0;
+}
+
+
+int rgb2gray(ImageP3* input, ImageP2* output){
+    ofstream outFile(nomeP2);
+    ImageP2 *out = new ImageP2;
+    ImageP3 *inp = new ImageP3;
+    for(int r=0; r<inp->size.rows; r++){
+        for(int c=0; c<inp->size.cols; c++){
+            out->data.pixels[r][c] = (inp->data.red[r][c] + inp->data.green[r][c] + inp->data.blue[r][c])/3;
+            outFile << out->data.pixels[r][c];
+        }
+    }
+    out = output;
+    inp = input;
+    return 0;
+}
 int main(){
-    newImageP1(4,4);
+    ImageP2 *image;
+    ImageP3 *image2;
+    //newImageP1(4,4);
+    newImageP2(5,5,image);
+    newImageP3(3,3,image2);
+    rgb2gray(image2,image);
+    writeimageP2();
     return EXIT_SUCCESS;
 }
