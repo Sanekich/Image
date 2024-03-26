@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 using namespace std;
-string nomeP1,nomeP2,nomeP3;
+string nomeP1,nomeP2,nomeP3,r2g;
 
 /**
  * @brief Struttura per la gestione delle dimensioni dell'immagine
@@ -554,7 +554,8 @@ int writeimageP3(){
 
 
 int rgb2gray(ImageP3* input, ImageP2* output){
-    ofstream outFile(nomeP2);
+    cout << "nome: ";cin >> r2g;
+    ofstream outFile(r2g);
     ImageP2 *out = new ImageP2;
     ImageP3 *inp = new ImageP3;
     for(int r=0; r<inp->size.rows; r++){
@@ -563,8 +564,8 @@ int rgb2gray(ImageP3* input, ImageP2* output){
             outFile << out->data.pixels[r][c];
         }
     }
-    out = output;
-    inp = input;
+    output = out;
+    input = inp;
     return 0;
 }
 int main(){
@@ -572,7 +573,9 @@ int main(){
     ImageP3 *image2;
     //newImageP1(4,4);
     newImageP2(5,5,image);
+    writeimageP2();
     newImageP3(3,3,image2);
+    writeimageP3();
     rgb2gray(image2,image);
     writeimageP2();
     return EXIT_SUCCESS;
