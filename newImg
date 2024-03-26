@@ -62,6 +62,7 @@ struct ImageP1
  */
 struct ImageP2
 {
+    string nome;
     string format;
     string comment;
     Size size;
@@ -74,6 +75,7 @@ struct ImageP2
 */
 struct ImageP3
 {
+    string nome;
     string format;
     string comment;
     Size size;
@@ -416,9 +418,6 @@ void freeImageP3(ImageP3 *imageP3)
 ImageP1* newImageP1(const unsigned int rows, const unsigned int cols)
 {
     ImageP1* img = new ImageP1;
-
-    cout << "nome di image: ";cin >> nomeP1;
-    ofstream outFile(nomeP1);
     img->size.cols = cols;
     img->size.rows = rows;
 
@@ -431,27 +430,18 @@ ImageP1* newImageP1(const unsigned int rows, const unsigned int cols)
         for (int c = 0; c < img->size.cols; c++)
         {
             img->data.pixels[r][c] = 0;
-            if(img->data.pixels[r][c] > 255)
-            {
-                cout << "a pixel value cant be > 1";
-                exit(0);
-            }
-            outFile << img->data.pixels[r][c];
         
         }
-        outFile << "\n";
     }
-    outFile.close();
     return img;
 }
 
-ImageP2* newImageP2(const unsigned int rows, const unsigned int cols,ImageP2* image2)
+ImageP2* newImageP2(const unsigned int rows, const unsigned int cols)
 {
 
 
-    cout << "nome di image: ";cin >> nomeP2;
     ImageP2 *img2 = new ImageP2; 
-    ofstream outFile(nomeP2);
+
     img2->size.cols = cols;
     img2->size.rows = rows;
 
@@ -463,28 +453,16 @@ ImageP2* newImageP2(const unsigned int rows, const unsigned int cols,ImageP2* im
         img2->data.pixels[r] = new unsigned int[img2->size.cols];
         for (int c = 0; c < img2->size.cols; c++)
         {
-            img2->data.pixels[r][c] = 0;
-            if(img2->data.pixels[r][c] > 255)
-            {
-                cout << "a pixel value cant be > 255";
-                exit(0);
-            }
-            outFile << img2->data.pixels[r][c];
-        
+            img2->data.pixels[r][c] = 0;   
         }
-        outFile << "\n";
+
     }
-    image2 = img2;
-    outFile.close();
     return img2;
 
 }
-ImageP3* newImageP3(const unsigned int rows, const unsigned int cols, ImageP3 *image3)
+ImageP3* newImageP3(const unsigned int rows, const unsigned int cols)
 {
     ImageP3 *img3 = new ImageP3;
-    cout << "nome di image: ";
-    cin >> nomeP3;
-    ofstream outFile(nomeP3);
     
     img3->size.cols = cols;
     img3->size.rows = rows;
@@ -505,78 +483,178 @@ ImageP3* newImageP3(const unsigned int rows, const unsigned int cols, ImageP3 *i
             img3->data.red[r][c] = 0;
             img3->data.green[r][c] = 0;
             img3->data.blue[r][c] = 0;
-            
-            
-            outFile << img3->data.red[r][c] << " "<< img3->data.green[r][c] << " "<< img3->data.blue[r][c] << " ";
-        }
-        outFile << endl; 
+        } 
     }
-    image3 = img3;
-    outFile.close();
     return img3;
 }
 
-int writeimageP1(){
-    ifstream inFile(nomeP1);
-    string line;
-    while (getline(inFile, line)) {
 
 
-    cout << line << endl;        
-
-    }
-    return 0;
-}
-
-int writeimageP2(){
-    ifstream inFile(nomeP2);
-    string line;
-    while (getline(inFile, line)) {
-
-
-    cout << line << endl;        
-
-    }
-    return 0;
-}
-
-int writeimageP3(){
-    ifstream inFile(nomeP3);
-    string line;
-    while (getline(inFile, line)) {
-
-
-    cout << line << endl;        
-
-    }
-    return 0;
-}
 
 
 int rgb2gray(ImageP3* input, ImageP2* output){
     cout << "nome: ";cin >> r2g;
-    ofstream outFile(r2g);
     ImageP2 *out = new ImageP2;
-    ImageP3 *inp = new ImageP3;
-    for(int r=0; r<inp->size.rows; r++){
-        for(int c=0; c<inp->size.cols; c++){
-            out->data.pixels[r][c] = (inp->data.red[r][c] + inp->data.green[r][c] + inp->data.blue[r][c])/3;
-            outFile << out->data.pixels[r][c];
+    for(int r=0; r<input->size.rows; r++){
+        for(int c=0; c<input->size.cols; c++){
+            out->data.pixels[r][c] = (input->data.red[r][c] + input->data.green[r][c] + input->data.blue[r][c])/3;
         }
     }
     output = out;
-    input = inp;
     return 0;
 }
+
+void InversionP1(ImageP1 *input, ImageP1 *output)
+{
+    for (int r = 0; r < output->size.rows; r++)
+    {
+        for (int c = 0; c < output->size.cols; c++)
+        {
+            if (output->data.pixels[r][c] == 0)
+            {
+                output->data.pixels[r][c] = 1;
+            }
+            else
+            {
+                output->data.pixels[r][c] = 0; 
+            }
+        }
+    }
+    cout << "Inversion complete\n";
+}
+
+void InversionP2(ImageP2 *input,ImageP2 *output)
+{
+
+    for (int r = 0; r < output->size.rows; r++)
+    {
+        for (int c = 0; c < output->size.cols; c++)
+        {
+            output->data.pixels[r][c] = 255 - output->data.pixels[r][c];
+        }
+    }
+    cout << "Inversion complete\n";
+}
+
+void InversionP3(ImageP3 *input,ImageP3 *output)
+{
+    for (int r = 0; r < output->size.rows; r++)
+    {
+        for (int c = 0; c < output->size.cols; c++)
+        {
+            output->data.red[r][c] = 255 - output->data.red[r][c];
+            output->data.green[r][c] = 255 - output->data.green[r][c];
+            output->data.blue[r][c] = 255 - output->data.blue[r][c];
+        }
+    }
+    cout << "Inversion complete\n";
+}
+
+void writeImageP1(ImageP1 *img1, string filename)
+{
+    ofstream outFile(filename);
+    for(int r = 0;r < img1->size.rows;r++)
+    {
+        for(int c = 0;c < img1->size.cols;c++)
+        {
+            outFile << img1->data.pixels[r][c];
+        }
+        outFile << "\n";
+    }
+}
+
+void writeImageP2(ImageP2 *img2, string filename)
+{
+    ofstream outFile(filename);
+    for(int r = 0;r < img2->size.rows;r++)
+    {
+        for(int c = 0;c < img2->size.cols;c++)
+        {
+            outFile << img2->data.pixels[r][c];
+        }
+        outFile << "\n";
+    }
+}
+
+void writeImageP3(ImageP3 *img3, string filename)
+{
+    ofstream outFile(filename);
+    for(int r = 0;r < img3->size.rows;r++)
+    {
+        for(int c = 0;c < img3->size.cols;c++)
+        {
+            outFile << img3->data.red[r][c];
+            outFile << img3->data.green[r][c];
+            outFile << img3->data.blue[r][c];
+        }
+        outFile << "\n";
+    }
+}
+
+void TrashHoldP2toP1(int Value,ImageP2 *input,ImageP1 *output)
+{
+    for(int r = 0;r < input->size.rows;r++)
+    {
+        for(int c = 0;c < input ->size.cols;c++)
+        {
+            if(input->data.pixels[r][c] > Value)
+            {
+                output->data.pixels[r][c] = 1;
+            }
+            else{
+                output->data.pixels[r][c] = 0;
+            }
+        }
+    }
+}
+
+void DoubleTrashHoldP2toP1(int maxValue,int minValue,ImageP2* input,ImageP1 * output)
+{
+    for(int r = 0;r < input->size.rows;r++)
+    {
+        for(int c = 0;c < input ->size.cols;c++)
+        {
+            if(input->data.pixels[r][c] > minValue && input->data.pixels[r][c] < maxValue)
+            {
+                output->data.pixels[r][c] = 1;
+            }
+            else{
+                output->data.pixels[r][c] = 0;
+            }
+        }
+    }
+}
+
+void adaptiveTrashHoldP2toP1(int distance,ImageP2* input,ImageP1 * output)
+{
+    int matrice[distance][distance];
+    for(int r = 0;r < distance;r++)
+    {
+        for(int c = 0;c < distance;c++)
+        {
+            
+        }
+    }
+}
+
+
+
 int main(){
-    ImageP2 *image;
-    ImageP3 *image2;
-    //newImageP1(4,4);
-    newImageP2(5,5,image);
-    writeimageP2();
-    newImageP3(3,3,image2);
-    writeimageP3();
-    rgb2gray(image2,image);
-    writeimageP2();
+    ImageP1 *image1;
+    ImageP1 *output1;
+    ImageP2 *image2;
+    ImageP2 *output2;
+    ImageP3 *image3;
+    ImageP3 *output3;
+    image1 = newImageP1(4,4);
+    image2 = newImageP2(4,4);
+    image3 = newImageP3(4,4);
+    output1 = newImageP1(4,4);
+    output2 = newImageP2(4,4);
+    output3 = newImageP3(4,4);
+    
+    InversionP3(image3,output3);
+    writeImageP3(output3,"out3");
+
     return EXIT_SUCCESS;
 }
